@@ -1,4 +1,4 @@
-epackage persistence
+package persistence
 
 import (
 	"database/sql"

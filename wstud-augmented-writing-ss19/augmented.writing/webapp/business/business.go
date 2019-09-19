@@ -3,7 +3,7 @@ package business
 import (
 	"database/sql"
 
-	"wstud-augmented-writing-ss19/augmented.writing/webapp/persistence"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/persistence"
 )
 
 // define all SQL queries and create 1 func for each call

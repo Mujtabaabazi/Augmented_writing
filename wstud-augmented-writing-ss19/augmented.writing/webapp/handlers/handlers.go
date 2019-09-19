@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
 )
 
 func ShowLogin(c *gin.Context) {
@@ -50,15 +50,15 @@ func ProcessRegistartion(c *gin.Context) {
 	_confrimpassword = !helpers.IsEmpty(confrimpassword)
 
 	if _firstname && _lastname && _username && _email && _password && _confrimpassword {
-		fmt.Fprintln(c, "Firstname for Register : ", firstname)
-		fmt.Fprintln(c, "Lastname for Register : ", lastname)
-		fmt.Fprintln(c, "Username for Register : ", username)
-		fmt.Fprintln(c, "Email for Register : ", email)
-		fmt.Fprintln(c, "Password for Register : ", password)
-		fmt.Fprintln(c, "ConfirmPassword for Register : ", confrimpassword)
+		fmt.Println(c, "Firstname for Register : ", firstname)
+		fmt.Println(c, "Lastname for Register : ", lastname)
+		fmt.Println(c, "Username for Register : ", username)
+		fmt.Println(c, "Email for Register : ", email)
+		fmt.Println(c, "Password for Register : ", password)
+		fmt.Println(c, "ConfirmPassword for Register : ", confrimpassword)
 
 	} else {
-		fmt.Fprintln(w, "This fields can not be blank!")
+		fmt.Println(c, "This fields can not be blank!")
 	}
 
 }

@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"wstud-augmented-writing-ss19/augmented.writing/webapp/handlers"
-	"wstud-augmented-writing-ss19/augmented.writing/webapp/sessionmanagement"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/handlers"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/sessionmanagement"
 )
 
 /*
