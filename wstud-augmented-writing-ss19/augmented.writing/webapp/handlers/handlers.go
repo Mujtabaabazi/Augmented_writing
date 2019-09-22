@@ -4,13 +4,13 @@ import (
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/business"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/models"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/persistence"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 type Response struct {
-	Status int64
 	Message string
 	Data interface{}
 }
@@ -37,6 +37,26 @@ func ShowRegistration(c *gin.Context) {
 		},
 	)
 
+}
+
+func Session(c *gin.Context) {
+
+	sessionId, _ := c.Cookie("augmented-writing-session")
+	user := &models.Users{}
+	if sessionId != "" {
+		session := sessions.Default(c)
+		email := session.Get("email")
+		if email == nil {
+			c.JSON(http.StatusBadRequest, &Response{Message: "Invalid session", Data:nil})
+			return
+		}
+		user.Email = email.(string)
+		if err := persistence.Connection().Where(user).First(&user).Error; err != nil {
+			c.JSON(http.StatusBadRequest, &Response{Message: "Invalid session", Data:nil})
+			return
+		}
+	}
+	c.JSON(http.StatusBadRequest, &Response{Message: "Ok", Data:user})
 }
 
 func ProcessRegistartion(c *gin.Context)  {
