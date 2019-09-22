@@ -22,3 +22,23 @@ func Login(userName, password string) (models.Users, error) {
 	}
 	return u, nil
 }
+func Registration(username, email, firstname, lastname, password string) error {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	userDao := models.NewUserDao()
+	if err = userDao.RegisterUser(&models.Users{
+		FirstName: firstname,
+		LastName: lastname,
+		Email: email,
+		UserName: username,
+		Password: string(hashedPassword),
+	}); err != nil {
+		return err
+	}
+
+
+	return nil
+
+}

@@ -7,7 +7,6 @@ import (
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/models"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
@@ -59,26 +58,15 @@ func ProcessRegistartion(c *gin.Context)  {
 	_confrimpassword = !helpers.IsEmpty(confrimpassword)
 
 	if _firstname && _lastname && _username && _email && _password && _confrimpassword {
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		err := business.Registration(username, email, firstname, lastname, password)
 		if err != nil {
-			//return err
+			c.JSON(http.StatusBadRequest, &Response{Message: "failed to register user"})
+			return
 		}
-		userDao := models.NewUserDao()
-		err = userDao.RegisterUser(&models.Users{
-			FirstName: firstname,
-			LastName: lastname,
-			Email: email,
-			UserName: username,
-			Password: string(hashedPassword),
-		})
-		if err != nil {
-			//return err
-		}
-		//return nil
 	} else {
-		fmt.Println(c, "This fields can not be blank!")
-	}
-	c.JSON(http.StatusOK, &Response{Message: "UserUpdationSuccessful"})
+		c.JSON(http.StatusBadRequest, &Response{Message: "Invalid registration request"})
+		return	}
+	c.JSON(http.StatusOK, &Response{Message: "Register Successfully"})
 
 }
 
