@@ -89,6 +89,12 @@ func ProcessRegistartion(c *gin.Context)  {
 			//c.JSON(http.StatusBadRequest, &Response{Message: "failed to register user"})
 			return
 		}
+		user := models.Users{Email:email}
+		if err := persistence.Connection().Where(user).First(&user).Error; err != nil {
+			c.JSON(http.StatusBadRequest, &Response{Message: "Invalid session", Data:nil})
+			return
+		}
+		setSession(c, user)
 	} else {
 		c.HTML(
 			http.StatusBadRequest,
@@ -173,22 +179,7 @@ func Login(c *gin.Context)  {
 			//c.JSON(http.StatusBadRequest, &Response{Message: "Invalid username password"})
 			return
 		}
-		// Create a session
-		s := sessions.Default(c)
-		s.Set("email", user.Email)
-
-		// Save the session
-		if err = s.Save(); err != nil {
-			c.HTML(
-				http.StatusUnauthorized,
-				"index.html", // page name
-				gin.H{
-					"title": "Login Page", // you can pass any number of key, values to the html page
-				},
-			)
-			//c.JSON(http.StatusBadRequest, &Response{Message: "Failed to save session"})
-			return
-		}
+		setSession(c, user)
 
 	} else {
 		c.HTML(
@@ -212,4 +203,23 @@ func Login(c *gin.Context)  {
 		//c.JSON(http.StatusOK, &Response{Message: fmt.Sprintf("Welcome %s %s", user.FirstName, user.LastName)})
 	}
 
+}
+
+func setSession(c *gin.Context, user models.Users) {
+	// Create a session
+	s := sessions.Default(c)
+	s.Set("email", user.Email)
+
+	// Save the session
+	if err := s.Save(); err != nil {
+		c.HTML(
+			http.StatusUnauthorized,
+			"index.html", // page name
+			gin.H{
+				"title": "Login Page", // you can pass any number of key, values to the html page
+			},
+		)
+		//c.JSON(http.StatusBadRequest, &Response{Message: "Failed to save session"})
+		return
+	}
 }
