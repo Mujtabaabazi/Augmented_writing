@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/business"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/models"
@@ -60,13 +59,36 @@ func ProcessRegistartion(c *gin.Context)  {
 	if _firstname && _lastname && _username && _email && _password && _confrimpassword {
 		err := business.Registration(username, email, firstname, lastname, password)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, &Response{Message: "failed to register user"})
+			c.HTML(
+				http.StatusBadRequest,
+				"index.html", // page name
+				gin.H{
+					"title": "Login Page", // you can pass any number of key, values to the html page
+				},
+			)
+			//c.JSON(http.StatusBadRequest, &Response{Message: "failed to register user"})
 			return
 		}
 	} else {
-		c.JSON(http.StatusBadRequest, &Response{Message: "Invalid registration request"})
-		return	}
-	c.JSON(http.StatusOK, &Response{Message: "Register Successfully"})
+		c.HTML(
+			http.StatusBadRequest,
+			"index.html", // page name
+			gin.H{
+				"title": "Registration Page", // you can pass any number of key, values to the html page
+			},
+		)
+		//c.JSON(http.StatusBadRequest, &Response{Message: "Invalid registration request"})
+		return
+	}
+
+	c.HTML(
+		http.StatusOK,
+		"home.html", // page name
+		gin.H{
+			"title": "Home Page", // you can pass any number of key, values to the html page
+		},
+	)
+	//c.JSON(http.StatusOK, &Response{Message: "Register Successfully"})
 
 }
 
@@ -84,7 +106,14 @@ func Login(c *gin.Context)  {
 	if  _username && _password {
 		user, err = business.Login(username, password)
 		if err != nil {
-			c.JSON(http.StatusBadRequest, &Response{Message: "Invalid username password"})
+			c.HTML(
+				http.StatusUnauthorized,
+				"index.html", // page name
+				gin.H{
+					"title": "Login Page", // you can pass any number of key, values to the html page
+				},
+			)
+			//c.JSON(http.StatusBadRequest, &Response{Message: "Invalid username password"})
 			return
 		}
 		// Create a session
@@ -93,16 +122,37 @@ func Login(c *gin.Context)  {
 
 		// Save the session
 		if err = s.Save(); err != nil {
-			c.JSON(http.StatusBadRequest, &Response{Message: "Failed to save session"})
+			c.HTML(
+				http.StatusUnauthorized,
+				"index.html", // page name
+				gin.H{
+					"title": "Login Page", // you can pass any number of key, values to the html page
+				},
+			)
+			//c.JSON(http.StatusBadRequest, &Response{Message: "Failed to save session"})
 			return
 		}
 
 	} else {
-		c.JSON(http.StatusBadRequest, &Response{Message: "Username / Password is required"})
+		c.HTML(
+			http.StatusBadRequest,
+			"index.html", // page name
+			gin.H{
+				"title": "Login Page", // you can pass any number of key, values to the html page
+			},
+		)
+		//c.JSON(http.StatusBadRequest, &Response{Message: "Username / Password is required"})
 		return
 	}
 	if (err == nil){
-	c.JSON(http.StatusOK, &Response{Message: fmt.Sprintf("Welcome %s %s", user.FirstName, user.LastName)})
+		c.HTML(
+			http.StatusOK,
+			"home.html", // page name
+			gin.H{
+				"title": "Home Page", // you can pass any number of key, values to the html page
+			},
+		)
+		//c.JSON(http.StatusOK, &Response{Message: fmt.Sprintf("Welcome %s %s", user.FirstName, user.LastName)})
 	}
 
 }
