@@ -92,6 +92,43 @@ func ProcessRegistartion(c *gin.Context)  {
 
 }
 
+func Logout(c *gin.Context)  {
+	sessionId, _ := c.Cookie("augmented-writing-session")
+	if sessionId != "" {
+		session := sessions.Default(c)
+
+		if email := session.Get("email"); email == nil {
+			c.HTML(
+				http.StatusBadRequest,
+				"home.html", // page name
+				gin.H{
+					"title": "Home Page", // you can pass any number of key, values to the html page
+				},
+			)
+			return
+		}
+
+		session.Clear()
+		if err := session.Save(); err != nil {
+			c.HTML(
+				http.StatusBadRequest,
+				"home.html", // page name
+				gin.H{
+					"title": "Home Page", // you can pass any number of key, values to the html page
+				},
+			)
+			return
+		}
+		c.HTML(
+			http.StatusOK,
+			"index.html", // page name
+			gin.H{
+				"title": "Login Page", // you can pass any number of key, values to the html page
+			},
+		)
+	}
+}
+
 func Login(c *gin.Context)  {
 
 	username := c.PostForm("user_name")
