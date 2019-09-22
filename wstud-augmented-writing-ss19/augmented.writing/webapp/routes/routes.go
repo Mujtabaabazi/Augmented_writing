@@ -32,6 +32,7 @@ func initializeRoutes(router *gin.Engine) {
 	router.GET("/", handlers.ShowLogin)
 	router.GET("/registration", handlers.ShowRegistration)
 	router.POST("/processRegisteration", handlers.ProcessRegistartion)
+	router.POST("/login", handlers.Login)
 
 }
 

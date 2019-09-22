@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/business"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/models"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
-
-	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
-	"github.com/gin-gonic/gin"
 )
 
 type Response struct {
@@ -78,5 +79,42 @@ func ProcessRegistartion(c *gin.Context)  {
 		fmt.Println(c, "This fields can not be blank!")
 	}
 	c.JSON(http.StatusOK, &Response{Message: "UserUpdationSuccessful"})
+
+}
+
+func Login(c *gin.Context)  {
+
+	username := c.PostForm("user_name")
+	password := c.PostForm("password")
+
+	_username, _password:= false, false
+	_username = !helpers.IsEmpty(username)
+	_password = !helpers.IsEmpty(password)
+
+	var user models.Users
+	var err error
+	if  _username && _password {
+		user, err = business.Login(username, password)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, &Response{Message: "Invalid username password"})
+			return
+		}
+		// Create a session
+		s := sessions.Default(c)
+		s.Set("email", user.Email)
+
+		// Save the session
+		if err = s.Save(); err != nil {
+			c.JSON(http.StatusBadRequest, &Response{Message: "Failed to save session"})
+			return
+		}
+
+	} else {
+		c.JSON(http.StatusBadRequest, &Response{Message: "Username / Password is required"})
+		return
+	}
+	if (err == nil){
+	c.JSON(http.StatusOK, &Response{Message: fmt.Sprintf("Welcome %s %s", user.FirstName, user.LastName)})
+	}
 
 }
