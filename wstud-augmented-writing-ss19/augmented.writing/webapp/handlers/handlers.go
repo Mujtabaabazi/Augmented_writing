@@ -42,12 +42,12 @@ func ShowRegistration(c *gin.Context) {
 
 func ProcessRegistartion(c *gin.Context)  {
 
-	firstname := c.PostForm("firstnamesignup")
-	lastname := c.PostForm("lastnamesignup")
-	username := c.PostForm("usernamesignup")
-	email := c.PostForm("emailsignup")
-	password := c.PostForm("passwordsignup")
-	confrimpassword := c.PostForm("passwordsignup_confirm")
+	firstname := c.PostForm("first_name")
+	lastname := c.PostForm("last_name")
+	username := c.PostForm("user_name")
+	email := c.PostForm("email")
+	password := c.PostForm("password")
+	confrimpassword := c.PostForm("password_confirm")
 
 	_firstname, _lastname, _username, _email, _password, _confrimpassword := false, false, false, false, false, false
 	_firstname = !helpers.IsEmpty(firstname)
@@ -55,7 +55,7 @@ func ProcessRegistartion(c *gin.Context)  {
 	_username = !helpers.IsEmpty(username)
 	_email = !helpers.IsEmpty(email)
 	_password = !helpers.IsEmpty(password)
-	_confrimpassword = !helpers.IsEmpty(confrimpassword)
+	_confrimpassword = !helpers.IsEmpty(confrimpassword) && password == confrimpassword
 
 	if _firstname && _lastname && _username && _email && _password && _confrimpassword {
 		err := business.Registration(username, email, firstname, lastname, password)
