@@ -2,11 +2,19 @@ package handlers
 
 import (
 	"fmt"
+	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/models"
+	"golang.org/x/crypto/bcrypt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/Augmented_writing/wstud-augmented-writing-ss19/augmented.writing/webapp/helpers"
+	"github.com/gin-gonic/gin"
 )
+
+type Response struct {
+	Status int64
+	Message string
+	Data interface{}
+}
 
 func ShowLogin(c *gin.Context) {
 
@@ -32,7 +40,7 @@ func ShowRegistration(c *gin.Context) {
 
 }
 
-func ProcessRegistartion(c *gin.Context) {
+func ProcessRegistartion(c *gin.Context)  {
 
 	firstname := c.PostForm("firstnamesignup")
 	lastname := c.PostForm("lastnamesignup")
@@ -50,15 +58,25 @@ func ProcessRegistartion(c *gin.Context) {
 	_confrimpassword = !helpers.IsEmpty(confrimpassword)
 
 	if _firstname && _lastname && _username && _email && _password && _confrimpassword {
-		fmt.Println(c, "Firstname for Register : ", firstname)
-		fmt.Println(c, "Lastname for Register : ", lastname)
-		fmt.Println(c, "Username for Register : ", username)
-		fmt.Println(c, "Email for Register : ", email)
-		fmt.Println(c, "Password for Register : ", password)
-		fmt.Println(c, "ConfirmPassword for Register : ", confrimpassword)
-
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+		if err != nil {
+			//return err
+		}
+		userDao := models.NewUserDao()
+		err = userDao.RegisterUser(&models.Users{
+			FirstName: firstname,
+			LastName: lastname,
+			Email: email,
+			UserName: username,
+			Password: string(hashedPassword),
+		})
+		if err != nil {
+			//return err
+		}
+		//return nil
 	} else {
 		fmt.Println(c, "This fields can not be blank!")
 	}
+	c.JSON(http.StatusOK, &Response{Message: "UserUpdationSuccessful"})
 
 }

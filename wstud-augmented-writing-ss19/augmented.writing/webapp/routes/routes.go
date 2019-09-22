@@ -39,6 +39,7 @@ func initializeRoutes(router *gin.Engine) {
 ignore
 **/
 
+
 func loadStaticFolders(router *gin.Engine, isModule bool) {
 	staticLinks := []struct {
 		link string

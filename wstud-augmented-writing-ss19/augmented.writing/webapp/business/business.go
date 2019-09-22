@@ -15,9 +15,9 @@ const (
 var db *sql.DB
 
 // DummyFunc connects to the datanase by one line..
-func DummyFunc() {
+func DummyFunc() *sql.DB {
 
 	db = persistence.Connection()
 
-	return
+	return db
 }
